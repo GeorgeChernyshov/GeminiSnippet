@@ -20,13 +20,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.geminisnippet.screen.TravelAdviceScreen
 import com.example.geminisnippet.screen.TravelGuideScreen
 import com.example.geminisnippet.ui.theme.GeminiSnippetTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +64,9 @@ fun TravelApp() {
                             selectedTabIndex = index
                             navController.navigate(destination.route)
                         },
-                        text = { Text(destination.route) } // You can customize tab text
+                        text = {
+                            Text(stringResource(id = destination.displayTitle))
+                        }
                     )
                 }
             }

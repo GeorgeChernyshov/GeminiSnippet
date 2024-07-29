@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -23,6 +26,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.geminisnippet.R
@@ -30,18 +34,25 @@ import com.example.geminisnippet.uistate.TravelGuideUiState
 import com.example.geminisnippet.viewmodel.TravelGuideViewModel
 
 @Composable
-fun TravelGuideScreen(viewModel: TravelGuideViewModel = viewModel()) {
+fun TravelGuideScreen(viewModel: TravelGuideViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState
-    TravelGuide(
-        uiState = uiState,
-        onUpdateShowDialog = { showDialog -> viewModel.updateShowDialog(showDialog) },
-        onImageCaptured = { imageBitmap ->
-            // TODO: Handle image captured from camera
-        },
-        onSelectImage = { uri ->
-            viewModel.updateImageUri(uri)
-        }
-    )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp) // Add horizontal padding
+            .verticalScroll(rememberScrollState()) // Make the content scrollable
+    ) {
+        TravelGuide(
+            uiState = uiState,
+            onUpdateShowDialog = { showDialog -> viewModel.updateShowDialog(showDialog) },
+            onImageCaptured = { imageBitmap ->
+                // TODO: Handle image captured from camera
+            },
+            onSelectImage = { uri ->
+                viewModel.updateImageUri(uri)
+            }
+        )
+    }
 }
 
 @Composable
