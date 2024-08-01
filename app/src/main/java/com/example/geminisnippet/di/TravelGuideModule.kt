@@ -3,6 +3,7 @@ package com.example.geminisnippet.di
 import android.content.Context
 import coil.ImageLoader
 import com.example.geminisnippet.repository.TravelGuideRepository
+import com.google.ai.client.generativeai.GenerativeModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,10 +17,11 @@ object TravelGuideModule {
     @Provides
     fun provideTravelGuideRepository(
         @ApplicationContext context: Context,
-        imageLoader: ImageLoader
+        imageLoader: ImageLoader,
+        model: GenerativeModel
     ): TravelGuideRepository {
         return TravelGuideRepository(
-            context, imageLoader
+            context, imageLoader, model
         )
     }
 

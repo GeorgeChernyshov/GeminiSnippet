@@ -21,8 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.geminisnippet.screen.TravelAdviceScreen
 import com.example.geminisnippet.screen.TravelGuideScreen
@@ -52,7 +54,12 @@ class MainActivity : ComponentActivity() {
 fun TravelApp() {
     val navController = rememberNavController()
     val tabs = listOf(TravelGuide, TravelAdvice)
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = currentBackStackEntry?.destination
+
+    var selectedTabIndex = tabs.indexOfFirst { it.route == currentDestination?.route }
+        .takeIf { it != -1 }
+        ?: 0
 
     Scaffold(
         topBar = {
@@ -62,7 +69,14 @@ fun TravelApp() {
                         selected = selectedTabIndex == index,
                         onClick = {
                             selectedTabIndex = index
-                            navController.navigate(destination.route)
+                            navController.navigate(destination.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+
+                                launchSingleTop = true
+                                restoreState = true
+                            }
                         },
                         text = {
                             Text(stringResource(id = destination.displayTitle))
@@ -74,7 +88,8 @@ fun TravelApp() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = TravelGuide.route,modifier = Modifier.padding(innerPadding)
+            startDestination = TravelGuide.route,
+            modifier = Modifier.padding(innerPadding)
         ) {
             composable(TravelGuide.route) { TravelGuideScreen() }
             composable(TravelAdvice.route) { TravelAdviceScreen() }

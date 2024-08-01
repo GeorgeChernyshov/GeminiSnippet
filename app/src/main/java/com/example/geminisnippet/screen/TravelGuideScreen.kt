@@ -1,11 +1,13 @@
 package com.example.geminisnippet.screen
 
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,7 +30,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.geminisnippet.R
 import com.example.geminisnippet.uistate.TravelGuideUiState
@@ -36,22 +38,29 @@ import com.example.geminisnippet.viewmodel.TravelGuideViewModel
 @Composable
 fun TravelGuideScreen(viewModel: TravelGuideViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState
+
+    LaunchedEffect(uiState) {
+        Log.d("TravelGuideScreen", "UI State: $uiState")
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp) // Add horizontal padding
+            .padding(horizontal = 16.dp) // Add horizontal padding
             .verticalScroll(rememberScrollState()) // Make the content scrollable
     ) {
-        TravelGuide(
-            uiState = uiState,
-            onUpdateShowDialog = { showDialog -> viewModel.updateShowDialog(showDialog) },
-            onImageCaptured = { imageBitmap ->
-                // TODO: Handle image captured from camera
-            },
-            onSelectImage = { uri ->
-                viewModel.updateImageUri(uri)
-            }
-        )
+        Box(modifier = Modifier.padding(vertical = 16.dp)) {
+            TravelGuide(
+                uiState = uiState,
+                onUpdateShowDialog = { showDialog -> viewModel.updateShowDialog(showDialog) },
+                onImageCaptured = { imageBitmap ->
+                    // TODO: Handle image captured from camera
+                },
+                onSelectImage = { uri ->
+                    viewModel.updateImageUri(uri)
+                }
+            )
+        }
     }
 }
 

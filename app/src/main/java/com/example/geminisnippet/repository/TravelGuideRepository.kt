@@ -19,13 +19,9 @@ import javax.inject.Inject
 
 class TravelGuideRepository @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val imageLoader: ImageLoader
+    private val imageLoader: ImageLoader,
+    private val generativeModel: GenerativeModel
 ) {
-    private val generativeModel = GenerativeModel(
-        modelName = "gemini-1.5-flash-001",
-        apiKey = BuildConfig.apiKey
-    )
-
     suspend fun analyzeImage(imageUri: Uri): Result<String> {
         val request = ImageRequest.Builder(context)
             .data(imageUri)
